@@ -16,6 +16,11 @@
         #video-container {
             margin-top: 20px;
             display: none;
+            width: 100%;
+            max-width: 640px; /* Sätter en maxbredd för spelaren */
+        }
+        #plyr-container {
+            width: 100%;
         }
     </style>
 </head>
@@ -38,10 +43,16 @@
             let source;
 
             if (platform === 'youtube') {
-                source = `https://www.youtube.com/watch?v=${videoId}`;
+                source = {
+                    src: videoId,
+                    provider: 'youtube'
+                };
                 document.getElementById('video-title').innerText = `YouTube Video: ${videoId}`;
             } else if (platform === 'vimeo') {
-                source = `https://vimeo.com/${videoId}`;
+                source = {
+                    src: videoId,
+                    provider: 'vimeo'
+                };
                 document.getElementById('video-title').innerText = `Vimeo Video: ${videoId}`;
             } else {
                 alert('Ogiltig länk. Vänligen ange en giltig YouTube- eller Vimeo-länk.');
@@ -50,12 +61,7 @@
 
             // Initiera Plyr
             const player = new Plyr('#plyr-container', {
-                sources: [
-                    {
-                        src: videoId,
-                        provider: platform,
-                    },
-                ],
+                sources: [source],
             });
 
             // Visa videospelaren
