@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player</title>
-    <link href="https://vjs.zencdn.net/7.21.0/video-js.css" rel="stylesheet"/>
+    <title>Videospelare med Plyr</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,6 +15,7 @@
         }
         #video-container {
             margin-top: 20px;
+            display: none;
         }
     </style>
 </head>
@@ -23,35 +24,39 @@
     <input type="text" id="video-url" placeholder="Klistra in Vimeo eller YouTube-länk" />
     <button id="play-button">Använda</button>
 
-    <div id="video-container" style="display:none;">
+    <div id="video-container">
         <h2 id="video-title"></h2>
-        <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" data-setup='{}'></video>
+        <div id="plyr-container"></div>
     </div>
 
-    <script src="https://vjs.zencdn.net/7.21.0/video.min.js"></script>
+    <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
     <script>
         document.getElementById('play-button').addEventListener('click', function() {
             const url = document.getElementById('video-url').value;
             const videoId = getVideoId(url);
             const platform = getPlatform(url);
-            const player = videojs('my-video');
+            let source;
 
             if (platform === 'youtube') {
-                player.src({
-                    src: `https://www.youtube.com/embed/${videoId}`,
-                    type: 'video/youtube'
-                });
+                source = `https://www.youtube.com/watch?v=${videoId}`;
                 document.getElementById('video-title').innerText = `YouTube Video: ${videoId}`;
             } else if (platform === 'vimeo') {
-                player.src({
-                    src: `https://player.vimeo.com/video/${videoId}`,
-                    type: 'video/vimeo'
-                });
+                source = `https://vimeo.com/${videoId}`;
                 document.getElementById('video-title').innerText = `Vimeo Video: ${videoId}`;
             } else {
                 alert('Ogiltig länk. Vänligen ange en giltig YouTube- eller Vimeo-länk.');
                 return;
             }
+
+            // Initiera Plyr
+            const player = new Plyr('#plyr-container', {
+                sources: [
+                    {
+                        src: videoId,
+                        provider: platform,
+                    },
+                ],
+            });
 
             document.getElementById('video-container').style.display = 'block';
             player.play();
