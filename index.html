@@ -38,7 +38,7 @@
 
             if (platform === 'youtube') {
                 player.src({
-                    src: `https://www.youtube.com/watch?v=${videoId}`,
+                    src: `https://www.youtube.com/embed/${videoId}`,
                     type: 'video/youtube'
                 });
                 document.getElementById('video-title').innerText = `YouTube Video: ${videoId}`;
